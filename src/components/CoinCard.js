@@ -119,19 +119,7 @@ const CoinCard = ({ symbol, coin_name, price_usd, percent_change_24h, percent_ch
                 <Text>7d:
                     <Text style={percent_change_7d < 0 ? percentChangeMinus : percentChangePlus}> {percent_change_7d} % </Text>
                 </Text>
-            </View>
-
-            {/* <View style={chartContainer}>
-                <Text>HELLO WORLD!!!!</Text>
-                <LineChart
-                    style={{ height : 128 }}
-                    data={testData}
-                    svg={{ strokeWidth : 2, stroke : 'rgb(134,65,244)'}}
-                    contentInset={{ top : 20, bottom : 20}}
-                >
-                </LineChart>
-            </View> */}
-            
+            </View> 
         </View>
     );
 }

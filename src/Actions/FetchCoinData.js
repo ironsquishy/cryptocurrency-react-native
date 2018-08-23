@@ -17,9 +17,8 @@ export default function FetchCoinData(){
     return dispatch => {
         dispatch({type : FETCHING_COIN_DATA});
 
-        FetchAllCoinbaseData()
-        .then(res => console.log('CB All Data:', res))
-        .catch(err => console.log('CB All Data Failed:', err));
+        //Just for testing APIs
+        testOperations();
     
         return FetchAllData()
         .then(res => {
@@ -31,4 +30,15 @@ export default function FetchCoinData(){
             dispatch({ type: FETCHING_COIN_DATA_FAIL, payload : err.data })
         })
     }
+}
+
+
+function testOperations () {
+
+    setTimeout(()=>{
+        FetchAllCoinbaseData()
+        .then(res => console.log('CB All Data:', res))
+        .catch(err => console.log('CB All Data Failed:', err));
+    }, 5000);
+
 }

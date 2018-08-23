@@ -10,14 +10,22 @@ export default async function (){
 
 
     try {
-        promises = CoinBaseProducts.map((val, index) => constructProductURL(CoinBaseProEndpoint, val))
-        // promises = CoinBaseProducts.map((val, index) => {
-        //     return Axios.get(constructProductURL(CoinBaseProEndpoint, val))
-        // })
-        //return await Axios.all(promises);
-        return await promises;
+        promises = returnAllPromises();
+        return await Axios.all(promises);
     } catch (err) {
         return err;
+    }
+
+    function returnAllPromises(){
+        return CoinBaseProducts.map((val, index) => {
+            return Axios.get(constructProductURL(CoinBaseProEndpoint, val),{
+                transformResponse: [function(_data){
+                    var outData = {};
+                    outData[val] = JSON.parse(_data);
+                    return outData;
+                }]
+            })
+        })
     }
 
     function nowYesterday_ISO(){
