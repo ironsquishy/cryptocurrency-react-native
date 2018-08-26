@@ -2,7 +2,9 @@ import Axios from 'axios';
 import Bluebird from 'bluebird';
 import qString from 'query-string';
 
-import { CoinMarketCap , CoinbBasePro, CoinBaseProEndpoint } from '../Utils/Constants';
+import FetchAllCoinbaseData from './coinbase.api';
+
+import { CoinMarketCap , CoinbBasePro, CoinBaseProEndpoint, CoinBaseProducts } from '../Utils/Constants';
 
 
 
@@ -14,13 +16,14 @@ export default async function (){
     cbParams.start = nowYesterday_ISO();
     cbParams.end = minuteOldNow_ISO();
     cbParams.granularity = 3600;
+
     
     try {
-
         coinmarketPromise = await Axios.get(CoinMarketCap);
-        coinBaseProPromise = await Axios.get(coinBaseProURL, { params : cbParams});
+        //coinBaseProPromise = await Axios.get(coinBaseProURL, { params : cbParams});
+        coinBaseProData = await FetchAllCoinbaseData();
         
-        return MergeData(coinmarketPromise.data, coinBaseProPromise.data);
+        return MergeData(coinmarketPromise.data, coinBaseProData);
     } catch (err){
         console.warn(err);
         return err;
@@ -28,8 +31,7 @@ export default async function (){
 
     function MergeData (coinMarketCapData, coinBaseProData) {
         var outData = {};
-
-        outData.CoinBase = ProcessData_Coinbase(coinBaseProData);
+        outData.CoinBase = ProcessData_Coinbase_ENH(coinBaseProData);
         outData.CoinMarketCap = ProcessData_CoinMarketCap(coinMarketCapData);
 
         return outData;
@@ -61,7 +63,7 @@ export default async function (){
         }
         return thisArray;
     }
-    
+
     function nowYesterday_ISO(){
         return new Date(Date.now() - (24 * 60 * 60 * 1000)).toISOString();
     }
@@ -77,7 +79,25 @@ export default async function (){
         outData.candles = ParseData(data);
     
         outData.historic_price1h = AggregatePrice_Data(data);
+
     
+        return outData;
+    }
+
+    function ProcessData_Coinbase_ENH(_data){
+        if(!_data){
+            return {};
+        }
+
+        var outData = {};
+        
+        //Bubble up _data key into outData.
+        for(var k in _data){
+            outData[k] = {};
+            outData[k].candles = ParseData(_data[k]);
+            outData[k].historic_price1h = AggregatePrice_Data(_data[k]);
+        }
+
         return outData;
     }
     
@@ -96,6 +116,21 @@ export default async function (){
             
             return result;
         }, []);
+    
+    }
+
+    function testOperations () {
+
+        setTimeout(()=>{
+            // FetchAllCoinbaseData()
+            // .then(res => console.log('Coinbase All Data:', res))
+            // .catch(err => console.log('Coinbase All Data Failed:', err));
+            FetchAllCoinbaseData()
+            .then(response => {
+                console.log('Coinbase', ProcessData_Coinbase_ENH(response));
+            })
+            .catch(err => console.log('Coinbase Error :', err))
+        }, 5000);
     
     }
 }

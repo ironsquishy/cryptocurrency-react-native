@@ -10,9 +10,18 @@ export default async function (){
 
 
     try {
-        promises = returnAllPromises();
-        return await Axios.all(promises);
+        // promises = returnAllPromises();
+        // return await Axios.all(promises);
+        var response = await Axios.all(returnAllPromises());
+        var outData  = {};
+        for(var i = 0; i < response.length; i++){
+            Object.assign(outData, response[i].data);
+        }
+        return outData;
     } catch (err) {
+        if(!err){
+            return {error: 1, message: 'No value for error was returned...'};
+        }
         return err;
     }
 
@@ -36,22 +45,11 @@ export default async function (){
         return new Date( Date.now() - 1000 * 60 ).toISOString();
     }
 
-    function ProcessData_Coinbase(data){
-        if(!data) return {};
-    
-        var outData = {};
-        outData.candles = ParseData(data);
-    
-        outData.historic_price1h = AggregatePrice_Data(data);
-    
-        return outData;
-    }
-
     function constructProductURL(_endpoint, _product){
         if (!_endpoint || !_product){
             return '';
         }
-        var outUrl = `${_endpoint}/products/${_product}/candles?`;
+        var outUrl = `${_endpoint}/products/${_product}-USD/candles?`;
 
         var cbParams = {};
         cbParams.start = nowYesterday_ISO();
@@ -60,12 +58,4 @@ export default async function (){
         
         return outUrl + QS.stringify(cbParams);
     }
-
-    function constructProductURL_All(_products){
-        if(!_products){
-            return [];
-        }
-        return CoinBaseProducts.map((val, index) => constructProductURL(CoinBaseProEndpoint,val));
-    }
-
 }

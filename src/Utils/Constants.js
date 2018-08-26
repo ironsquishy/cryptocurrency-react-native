@@ -6,4 +6,4 @@ export const CoinBasePro = 'https://api.pro.coinbase.com/products/BTC-USD/candle
 
 export const CoinBaseProEndpoint = 'https://api.pro.coinbase.com';
 
-export const CoinBaseProducts = ['BTC-USD', 'ETH-USD', 'LTC-USD'];
+export const CoinBaseProducts = ['BTC', 'ETH', 'LTC'];

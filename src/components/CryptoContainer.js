@@ -25,7 +25,7 @@ class CryptoContainer extends Component {
         const { crypto } = this.props;
         return crypto.data.CoinMarketCap.map((coin, index) => 
                 <View key={index}>
-                <ChartCoin dataPrices={crypto.data.CoinBase.historic_price1h}/>
+                <ChartCoin dataPrices={crypto.data.CoinBase[coin.symbol].historic_price1h}/>
                 <CoinCard 
                     coin_name={coin.name}
                     symbol={coin.symbol}

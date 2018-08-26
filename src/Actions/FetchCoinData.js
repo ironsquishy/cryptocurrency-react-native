@@ -3,8 +3,9 @@ import Axios from 'axios';
 import { apiBaseURL } from '../Utils/Constants';
 
 import FetchAllData from '../API/RestAPI';
-
 import FetchAllCoinbaseData from '../API/coinbase.api';
+
+
 
 import {
     FETCHING_COIN_DATA, 
@@ -16,10 +17,6 @@ export default function FetchCoinData(){
    
     return dispatch => {
         dispatch({type : FETCHING_COIN_DATA});
-
-        //Just for testing APIs
-        testOperations();
-    
         return FetchAllData()
         .then(res => {
 
@@ -33,12 +30,3 @@ export default function FetchCoinData(){
 }
 
 
-function testOperations () {
-
-    setTimeout(()=>{
-        FetchAllCoinbaseData()
-        .then(res => console.log('CB All Data:', res))
-        .catch(err => console.log('CB All Data Failed:', err));
-    }, 5000);
-
-}
